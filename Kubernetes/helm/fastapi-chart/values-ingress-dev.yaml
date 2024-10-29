@@ -1,0 +1,29 @@
+namespace: dev
+
+deployFrontend: false
+deployBackend: false
+deployPostgres: false
+deployIngress: true
+
+rules:
+  - frontend_host: dev.myakuracy.click
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend-dev
+              port:
+                number: 5173
+  - backend_host: dev-app.myakuracy.click
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: backend-dev
+              port:
+                number: 8000
+

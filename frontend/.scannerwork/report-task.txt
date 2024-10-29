@@ -1,0 +1,6 @@
+projectKey=frontend1
+serverUrl=http://44.222.202.199:9000
+serverVersion=10.7.0.96327
+dashboardUrl=http://44.222.202.199:9000/dashboard?id=frontend1
+ceTaskId=f7fa2453-95c9-415d-b546-e7aec68f0ee7
+ceTaskUrl=http://44.222.202.199:9000/api/ce/task?id=f7fa2453-95c9-415d-b546-e7aec68f0ee7

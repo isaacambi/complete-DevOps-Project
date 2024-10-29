@@ -1,0 +1,20 @@
+namespace: dev
+
+deployFrontend: false
+deployBackend: false
+deployPostgres: true
+deployIngress: false
+
+capacity:
+  storage: 5Gi
+
+resources:
+  requests:
+    storage: 5Gi
+
+env:
+  POSTGRES_SERVER: "postgres-dev"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "app-dev"
+  POSTGRES_USER: "app-dev"
+  POSTGRES_PASSWORD: "changethis123-dev"

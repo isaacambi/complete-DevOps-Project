@@ -1,0 +1,68 @@
+{{- if .Values.deployBackend }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: backend-{{ .Values.namespace }}
+  template:
+    metadata:
+      labels:
+        app: backend-{{ .Values.namespace }}
+    spec:
+      containers:
+        - name: backend-{{ .Values.namespace }}
+          image: 166937434313.dkr.ecr.us-east-1.amazonaws.com/backend:{{ .Values.tag }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            {{- range .Values.env }}
+            - name: "{{ .name }}"
+              value: "{{ .value }}"
+            {{- end }}
+          resources:
+            requests:
+              cpu: "{{ .Values.resources.requests.cpu }}"
+              memory: "{{ .Values.resources.requests.memory }}"
+            limits:
+              cpu: "{{ .Values.resources.limits.cpu }}"
+              memory: "{{ .Values.resources.limits.memory }}"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: backend-{{ .Values.namespace }}
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: server-hpa-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend-{{ .Values.namespace }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  targetCPUUtilizationPercentage: {{ .Values.hpa.targetCPUUtilizationPercentage }}
+
+{{- end }}
+

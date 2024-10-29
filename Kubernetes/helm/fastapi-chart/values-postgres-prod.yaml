@@ -1,0 +1,21 @@
+namespace: prod
+
+deployFrontend: false
+deployBackend: false
+deployPostgres: true
+deployIngress: false
+
+capacity:
+  storage: 10Gi
+
+resources:
+  requests:
+    storage: 5Gi
+
+env:
+  POSTGRES_SERVER: "postgres-prod"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "app-prod"
+  POSTGRES_USER: "app-prod"
+  POSTGRES_PASSWORD: "changethis123-prod"
+

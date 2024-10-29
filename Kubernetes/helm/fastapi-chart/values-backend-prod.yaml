@@ -1,0 +1,66 @@
+replicaCount: 1
+
+deployFrontend: false
+deployBackend: true
+deployPostgres: false
+deployIngress: false
+
+namespace: prod
+tag: latest
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"  # Removed the extra quotation mark here
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+
+env:
+  - name: DOMAIN
+    value: "http://app.myakuracy.click"
+  - name: ENVIRONMENT
+    value: "local"
+  - name: PROJECT_NAME
+    value: "Full Stack FastAPI Project"
+  - name: STACK_NAME
+    value: "full-stack-fastapi-project"
+  - name: BACKEND_CORS_ORIGINS
+    value: "http://myakuracy.click"
+  - name: SECRET_KEY
+    value: "changethis123"
+  - name: FIRST_SUPERUSER
+    value: "isaacambi2@gmail.com"
+  - name: FIRST_SUPERUSER_PASSWORD
+    value: "Isaacambi1234#"
+  - name: USERS_OPEN_REGISTRATION
+    value: "True"
+  - name: SMTP_HOST
+    value: ""
+  - name: SMTP_USER
+    value: ""
+  - name: SMTP_PASSWORD
+    value: ""
+  - name: EMAILS_FROM_EMAIL
+    value: "info@example.com"
+  - name: SMTP_TLS
+    value: "True"
+  - name: SMTP_SSL
+    value: "False"
+  - name: SMTP_PORT
+    value: "587"
+  - name: POSTGRES_SERVER
+    value: "postgres-prod"
+  - name: POSTGRES_PORT
+    value: "5432"
+  - name: POSTGRES_DB
+    value: "app-prod"
+  - name: POSTGRES_USER
+    value: "app-prod"
+  - name: POSTGRES_PASSWORD
+    value: "changethis123-prod"

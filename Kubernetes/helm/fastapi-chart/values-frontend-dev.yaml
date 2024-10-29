@@ -1,0 +1,23 @@
+replicaCount: 1
+deployFrontend: true
+deployBackend: false
+deployPostgres: false
+deployIngress: false
+
+namespace: dev
+tag: "e4505af1c870ace813d82da4d45452aebb0c65f5"
+resources:
+  requests:
+    cpu_frontend: "500m"
+    memory_frontend: "750Mi"
+  limits:
+    cpu_frontend: "750m"
+    memory_frontend: "750Mi"
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+
+env:
+  VITE_API_URL: "http://dev-app.myakuracy.click"

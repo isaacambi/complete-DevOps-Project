@@ -1,0 +1,64 @@
+{{- if .Values.deployFrontend }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: frontend-{{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: frontend-{{ .Values.namespace }}
+  template:
+    metadata:
+      labels:
+        app: frontend-{{ .Values.namespace }}
+    spec:
+      containers:
+        - name: frontend-{{ .Values.namespace }}
+          image: "166937434313.dkr.ecr.us-east-1.amazonaws.com/frontend:{{ .Values.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5173
+          env:
+            - name: VITE_API_URL
+              value: "{{ .Values.env.VITE_API_URL }}"
+          resources:
+            requests:
+              cpu: "{{ .Values.resources.requests.cpu_frontend }}"
+              memory: "{{ .Values.resources.requests.memory_frontend }}"
+            limits:
+              cpu: "{{ .Values.resources.limits.cpu_frontend }}"
+              memory: "{{ .Values.resources.limits.memory_frontend }}"
+#          imagePullSecrets:
+#            - name: ecr-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: frontend-{{ .Values.namespace }}
+  ports:
+    - protocol: TCP
+      port: 5173
+      targetPort: 5173
+  type: ClusterIP
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend-{{ .Values.namespace }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  targetCPUUtilizationPercentage: 80
+{{- end }}
+

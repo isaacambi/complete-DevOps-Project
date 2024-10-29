@@ -1,0 +1,37 @@
+{{- if .Values.deployIngress }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-{{ .Values.namespace | default "default" }}  # Fallback for missing namespace
+  namespace: {{ .Values.namespace | default "default" }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # Enforce HTTP
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"  # Set this to "true" if you want HTTPS
+spec:
+  {{- if .Values.rules }}
+  ingressClassName: nginx
+  rules:
+    {{- range .Values.rules }}
+    {{- if .frontend_host }}
+    - host: {{ .frontend_host }}
+      http:
+        paths: {{ toJson .http.paths | indent 10 }}
+    {{- end }}
+    {{- if .backend_host }}
+    - host: {{ .backend_host }}
+      http:
+        paths: {{ toJson .http.paths | indent 10 }}
+    {{- end }}
+    {{- end }}
+  {{- else }}
+  # Error if no rules are defined
+  defaultBackend:
+    service:
+      name: backend-dev
+      port:
+        number: 80
+  {{- end }}
+{{- end }}
+

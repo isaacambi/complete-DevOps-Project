@@ -1,0 +1,24 @@
+replicaCount: 1
+deployFrontend: true
+deployBackend: false
+deployPostgres: false
+deployIngress: false
+
+namespace: prod
+tag: latest
+resources:
+  requests:
+    cpu_frontend: "500m"
+    memory_frontend: "750Mi"
+  limits:
+    cpu_frontend: "750m"
+    memory_frontend: "750Mi"
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+
+env:
+  VITE_API_URL: "http://app.myakuracy.click"
+

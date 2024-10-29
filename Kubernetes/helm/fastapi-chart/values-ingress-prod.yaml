@@ -1,0 +1,29 @@
+namespace: prod
+
+deployFrontend: false
+deployBackend: false
+deployPostgres: false
+deployIngress: true
+
+rules:
+  - frontend_host: myakuracy.click
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend-prod
+              port:
+                number: 5173
+  - backend_host: app.myakuracy.click
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: backend-prod
+              port:
+                number: 8000
+

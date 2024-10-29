@@ -1,0 +1,83 @@
+{{- if .Values.deployPostgres }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }} # Ensure your namespace is properly set
+spec:
+  capacity:
+    storage: {{ .Values.resources.requests.storage }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data
+  storageClassName: manual
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.resources.requests.storage }}
+  storageClassName: manual
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-{{ .Values.namespace }}
+  template:
+    metadata:
+      labels:
+        app: postgres-{{ .Values.namespace }}
+    spec:
+      containers:
+        - name: postgres-{{ .Values.namespace }}
+          image: postgres:14
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_SERVER
+              value: "{{ .Values.env.POSTGRES_SERVER }}"
+            - name: POSTGRES_PORT
+              value: "{{ .Values.env.POSTGRES_PORT }}"
+            - name: POSTGRES_DB
+              value: "{{ .Values.env.POSTGRES_DB }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.env.POSTGRES_USER }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.env.POSTGRES_PASSWORD }}"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage-{{ .Values.namespace }}
+      volumes:
+        - name: postgres-storage-{{ .Values.namespace }}
+          persistentVolumeClaim:
+            claimName: postgres-pvc-{{ .Values.namespace }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres-{{ .Values.namespace }}
+  type: ClusterIP
+{{- end }}
+
+
