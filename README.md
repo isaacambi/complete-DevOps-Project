@@ -923,7 +923,7 @@ PASSWORD=$(kubectl get secret $SECRET_NAME -n $NAMESPACE -o jsonpath="{.data.pas
 # Print the decoded password
 echo "Decoded password: $PASSWORD"
 ```
-![argocd login page](./images/argocd-login.png)
+![argocd login page](./images/argo-login.png)
 
 Now login to argoCD server by browsing the loadbalancer and default username with the echoed password. This will open the ArgoCD UI
 
