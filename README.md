@@ -949,9 +949,9 @@ You can now browse your application by getting the ingress load balancer and cre
 
 - also login with the superuser details to confirm proper networking in your deployment.
 
-![argocd page](./images/argo2-login.png)
+![argocd page](./images/argo2.png)
 
-![argocd  page](./images/argo3-login.png)
+![argocd  page](./images/argo3.png)
 
 # Now we need to create a CD for our pipeline. add the follow CD to our github actions pipeline 
 
